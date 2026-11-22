@@ -6,7 +6,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+// Output directory: the grader sets MAKEFUN_OUTPUT_DIR; otherwise /output.
+// An env var set to an empty string counts as unset, so a stray empty
+// value cannot break the copy (mkdirSync("") would throw).
+const outDir = (process.env.MAKEFUN_OUTPUT_DIR ?? "").trim() || "/output";
 mkdirSync(outDir, { recursive: true });
 
 const src = join(here, "entry.png");
